@@ -13,7 +13,7 @@
   - [3. 🚀 Set Up `tmux` on Client Machine](#3--set-up-tmux-on-client-machine)
   - [4. 💾 Perform `dd` Clone](#4--perform-dd-clone)
   - [5. 🔄 Post-cloning Procedures on Machine B](#5--post-cloning-procedures-on-machine-b)
-- [🎉 Conclusion {#conclusion}](#-conclusion-conclusion)
+- [🎉 Conclusion](#-conclusion)
 
 ## 📚 Introduction
 
@@ -231,13 +231,13 @@ After cloning, perform system setup on Machine B:
     sudo umount /mnt/root/dev /mnt/root/proc /mnt/root/sys /mnt/root/boot /mnt/root
     sudo reboot
     ```
-- Login to Destination Server and check the result
-  ![Source Server](pictures/source%20server.png)
-  ![Destination Server](pictures/destination%20server.png)
-  Both Source and Destiantion Server are the **same packages, settings**.
 
-## 🎉 Conclusion {#conclusion}
+## 🎉 Conclusion
 
 You've successfully cloned an Ubuntu system using SSH and dd. This process ensures a secure and reliable migration with minimal downtime. By following these steps, you're leveraging both the power and flexibility of Linux and open-Source Server tools.
 
 🔔 Final Note: Verify that all settings and data have transferred correctly after rebooting*.
+  ![Source Server](pictures/source%20server.png)
+  ![Destination Server](pictures/destination%20server.png)
+Both Source and Destination Server are the **same packages, settings**.
+***GL & HF!***
