@@ -5,12 +5,12 @@
 - [📚 Table of Contents](#-table-of-contents)
 - [📚 Introduction](#-introduction)
 - [🎯 Benefits of Using SSH for Cloning](#-benefits-of-using-ssh-for-cloning)
-- [🎨 Objectives](#-objectives)
 - [🔧 Prerequisites](#-prerequisites)
+- [⚠️ Disclaimer](#️-disclaimer)
 - [👣 Step-by-Step Guide](#-step-by-step-guide)
   - [1. 📊 Diagram and Network Configuration](#1--diagram-and-network-configuration)
   - [2. 🔄 Preparation on Machine B](#2--preparation-on-machine-b)
-  - [3. 🚀 Set Up `tmux` on Client Machine {#tmux-setup}](#3--set-up-tmux-on-client-machine-tmux-setup)
+  - [3. 🚀 Set Up `tmux` on Client Machine](#3--set-up-tmux-on-client-machine)
   - [4. 💾 Perform `dd` Clone](#4--perform-dd-clone)
   - [5. 🔄 Post-cloning Procedures on Machine B](#5--post-cloning-procedures-on-machine-b)
 - [🎉 Conclusion {#conclusion}](#-conclusion-conclusion)
@@ -29,14 +29,6 @@ System cloning is an essential task that ensures a smooth migration of data and 
 - **⏳ Minimal Downtime**: Cloning over SSH can be performed remotely, offering flexibility and reducing system downtime.
 - **🆓 Open Source Server**: Both SSH and `dd` are open-Source Server tools available on most Linux distributions without additional licensing costs.
 
-## 🎨 Objectives
-
-    - [1. 📊 Diagram and Network Configuration {#diagram-network}](#1--diagram-and-network-configuration-diagram-network)
-    - [2. 🔄 Preparation on Machine B {#preparation}](#2--preparation-on-machine-b-preparation)
-    - [3. 🚀 Set Up `tmux` on Client Machine {#tmux-setup}](#3--set-up-tmux-on-client-machine-tmux-setup)
-    - [4. 💾 Perform `dd` Clone {#dd-clone}](#4--perform-dd-clone-dd-clone)
-    - [5. 🔄 Post-cloning Procedures on Machine B {#post-cloning}](#5--post-cloning-procedures-on-machine-b-post-cloning)
-
 ## 🔧 Prerequisites
 
 - Two Ubuntu server machines (A and B).
@@ -46,7 +38,9 @@ System cloning is an essential task that ensures a smooth migration of data and 
 - SSH access configured between machines.
 - Install `tmux` on the client machine to prevent disconnects during long operations.
 
----
+## ⚠️ Disclaimer
+> [!WARNING]
+> This guide is provided as-is without any warranties. The authors are not responsible for any damage or data loss that may occur. It is highly recommended to back up your system thoroughly before proceeding. Practice on a lab environment before applying these steps in a production environment.
 
 ## 👣 Step-by-Step Guide
 
@@ -126,7 +120,7 @@ Ensure Machine B is prepared to receive the disk image:
 
 > **⚠️ Note:** Double-check the network connection before proceeding.
 
-### 3. 🚀 Set Up `tmux` on Client Machine {#tmux-setup}
+### 3. 🚀 Set Up `tmux` on Client Machine
 
 On the client machine, open a `tmux` session to manage the SSH connection:
 
