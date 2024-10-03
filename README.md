@@ -9,18 +9,19 @@
 - [⚠️ Disclaimer](#️-disclaimer)
 - [👣 Step-by-Step Guide](#-step-by-step-guide)
   - [1. 📊 Diagram and Network Configuration](#1--diagram-and-network-configuration)
-  - [2. 🔄 Preparation on Machine B](#2--preparation-on-machine-b)
+  - [2. 🔄 Preparation on Destination Server](#2--preparation-on-destination-server)
   - [3. 🚀 Set Up `tmux` on Client Machine](#3--set-up-tmux-on-client-machine)
   - [4. 💾 Perform `dd` Clone](#4--perform-dd-clone)
-  - [5. 🔄 Post-cloning Procedures on Machine B](#5--post-cloning-procedures-on-machine-b)
+  - [5. 🔄 Post-cloning Procedures on Destination Server](#5--post-cloning-procedures-on-destination-server)
+  - [6. 🔍 Verify MD5 Checksums](#6--verify-md5-checksums)
 - [🎉 Conclusion](#-conclusion)
 
 ## 📚 Introduction
 
-System cloning is an essential task that ensures a smooth migration of data and settings from one machine to another. This guide will walk you through the process of cloning an Ubuntu system from Machine A to Machine B using SSH and `dd`. Leveraging SSH provides a secure and encrypted data transfer channel between the two systems, making it a reliable choice for IT professionals.
+System cloning is an essential task that ensures a smooth migration of data and settings from one machine to another. This guide will walk you through the process of cloning an Ubuntu system from Source Server to Destination Server using SSH and `dd`. Leveraging SSH provides a secure and encrypted data transfer channel between the two systems, making it a reliable choice for IT professionals.
 
 > [!NOTE]
-> In a lab environment, both machines are on the same network. However, in a real-world scenario, as long as Machine A and Machine B can SSH into each other, they can be located on different networks.
+> In a lab environment, both machines are on the same network. However, in a real-world scenario, as long as Source Server and Destination Server can SSH into each other, they can be located on different networks.
 
 ## 🎯 Benefits of Using SSH for Cloning
 
@@ -31,9 +32,9 @@ System cloning is an essential task that ensures a smooth migration of data and 
 
 ## 🔧 Prerequisites
 
-- Two Ubuntu server machines (A and B).
+- Two Ubuntu server machines (source and destination server).
 - One client machine for remote connection.
-- Machine B should boot from a Live CD for system configuration.
+- Destination Server should boot from a Live CD for system configuration.
 - Ensure network connectivity between all machines.
 - SSH access configured between machines.
 - Install `tmux` on the client machine to prevent disconnects during long operations.
@@ -47,7 +48,7 @@ System cloning is an essential task that ensures a smooth migration of data and 
 ### 1. 📊 Diagram and Network Configuration
 
 - Diagram:
-
+*
 ```mermaid
 sequenceDiagram
     participant Client
@@ -63,8 +64,11 @@ sequenceDiagram
     Client->>Destination Server: Activate LVM volumes
     Client->>Destination Server: Mount partitions
     Client->>Destination Server: Update /etc/fstab
+    Client->>Destination Server: Check MD5 checksum
     Client->>Destination Server: Reinstall GRUB
     Client->>Destination Server: Reboot system
+    Source Server ->> Client: Check MD5 checksum
+    Destination Server ->> Client: Compare MD5 checksums
 ```
 
 **Source Server Specs**
@@ -107,13 +111,13 @@ sda     8:0    0    25G  0 disk
 sr0    11:0    1   4.1G  0 rom  /cdrom
 ```
 
-- Ensure that SSH is installed and configured on both Machine A and Machine B. Verify network connectivity:
-- Ping Machine A and Machine B from the client machine to ensure connectivity.
+- Ensure that SSH is installed and configured on both Source Server and Destination Server. Verify network connectivity:
+- Ping Source Server and Destination Server from the client machine to ensure connectivity.
 - Set up SSH keys for password-less login if needed.
 
-### 2. 🔄 Preparation on Machine B
+### 2. 🔄 Preparation on Destination Server
 
-Ensure Machine B is prepared to receive the disk image:
+Ensure Destination Server is prepared to receive the disk image:
 
 1. Update package lists and install necessary tools (`lvm2`, `grub-pc`).
 2. Boot from a Live CD and ensure all partitions are unmounted.
@@ -122,26 +126,28 @@ Ensure Machine B is prepared to receive the disk image:
 
 ### 3. 🚀 Set Up `tmux` on Client Machine
 
-On the client machine, open a `tmux` session to manage the SSH connection:
+On the client machine, open a `tmux` session to manage the SSH connection. Using `tmux` ensures that your session remains active even if the network connection is interrupted:
 
-1. Connect to Machine A using SSH from the client.
+1. Connect to Source Server using SSH from the client.
 2. Start a `tmux` session by running `tmux`.
+
+> **Important:** Using `tmux` helps prevent disruptions during long operations, ensuring a smooth and uninterrupted cloning process.
 
 ### 4. 💾 Perform `dd` Clone
 
-Using SSH, clone the disk from Machine A to Machine B:
+Using SSH, clone the disk from Source Server to Destination Server:
 
 - From the client machine, within the `tmux` session, execute:
 
     ```bash
-    sudo dd if=/dev/sda bs=64K conv=noerror,sync status=progress | ssh ubuntu@[Machine B IP] "sudo dd of=/dev/sda bs=64K status=progress"
+    sudo dd if=/dev/sda bs=64K conv=noerror,sync status=progress | ssh ubuntu@[Destination Server IP] "sudo dd of=/dev/sda bs=64K status=progress"
     ```
 
 🔗 Important: Ensure **SSH service is running and using tmux** on both machines.
 
-### 5. 🔄 Post-cloning Procedures on Machine B
+### 5. 🔄 Post-cloning Procedures on Destination Server
 
-After cloning, perform system setup on Machine B:
+After cloning, perform system setup on Destination Server:
 
 - Activate LVM Volumes:
 
@@ -177,6 +183,7 @@ After cloning, perform system setup on Machine B:
     └─sda3                      8:3    0    23G  0 part
     └─ubuntu--vg-ubuntu--lv 253:0    0  11.5G  0 lvm
     sr0                        11:0    1   4.1G  0 rom  /cdrom
+    
     blkid
     /dev/sr0: UUID="2023-03-16-15-57-27-00" LABEL="Ubuntu 20.04.6 LTS amd64" TYPE="iso9660" PTUUID="405a23c7" PTTYPE="dos"     
     /dev/loop0: TYPE="squashfs"
@@ -192,7 +199,7 @@ After cloning, perform system setup on Machine B:
     /dev/mapper/ubuntu--vg-ubuntu--lv: UUID="015ffb9a-4b73-4010-9b73-854ddd6e8c55" TYPE="ext4"
     ```
 
-    -  Edit **UUID** in **/etc/fstab**
+- Edit **UUID** in **/etc/fstab**
 
     ```bash
     sudo nano /mnt/root/etc/fstab
@@ -231,12 +238,38 @@ After cloning, perform system setup on Machine B:
     sudo umount /mnt/root/dev /mnt/root/proc /mnt/root/sys /mnt/root/boot /mnt/root
     sudo reboot
     ```
+ MD5 Checksums
+### 6. 🔍 Verify MD5 Checksums
+
+After rebooting, verify the integrity of the cloned data by comparing MD5 checksums on both Source Server and Destination Server:
+
+- On Source Server, generate MD5 checksums
+
+    ```bash
+    sudo md5sum /dev/sda2 /dev/sda3 /dev/mapper/ubuntu--vg-ubuntu--lv > /tmp/source_md5.txt
+    ```
+
+- On Destination Server, generate MD5 checksums
+
+    ```bash
+    sudo md5sum /dev/sda2 /dev/sda3 /dev/mapper/ubuntu--vg-ubuntu--lv > /tmp/destination_md5.txt
+    ```
+
+- Transfer the checksum files to the client machine and compare them using `diff`
+
+    ```bash
+    scp ubuntu@[Source Server IP]:/tmp/source_md5.txt /tmp/
+    scp ubuntu@[Destination Server IP]:/tmp/destination_md5.txt /tmp/
+    diff /tmp/source_md5.txt /tmp/destination_md5.txt
+    ```
+
+If there are no differences, the cloning process is complete and successful.
 
 ## 🎉 Conclusion
 
 You've successfully cloned an Ubuntu system using SSH and dd. This process ensures a secure and reliable migration with minimal downtime. By following these steps, you're leveraging both the power and flexibility of Linux and open-Source Server tools.
 
-🔔 Final Note: Verify that all settings and data have transferred correctly after rebooting*.
+🔔 Final Note: Verify that all settings and data have transferred correctly after rebooting.
   ![Source Server](pictures/source%20server.png)
   ![Destination Server](pictures/destination%20server.png)
 Both Source and Destination Server are the **same packages, settings**.
