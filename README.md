@@ -1,5 +1,14 @@
 <h1 align="center">📦 Cloning an Ubuntu System Using SSH and `dd`</h1>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+  <img src="https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black" alt="Linux">
+  <img src="https://img.shields.io/badge/Bash-4EAA25?logo=gnu-bash&logoColor=white" alt="Bash">
+  <img src="https://img.shields.io/badge/SSH-secured-informational?logo=openssh&logoColor=white" alt="SSH">
+</p>
+
+
 ## 📚 Table of Contents
 
 - [📚 Table of Contents](#-table-of-contents)
