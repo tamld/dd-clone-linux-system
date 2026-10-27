@@ -247,7 +247,7 @@ After cloning, perform system setup on Destination Server:
     sudo umount /mnt/root/dev /mnt/root/proc /mnt/root/sys /mnt/root/boot /mnt/root
     sudo reboot
     ```
- MD5 Checksums
+
 ### 6. 🔍 Verify MD5 Checksums
 
 After rebooting, verify the integrity of the cloned data by comparing MD5 checksums on both Source Server and Destination Server:

@@ -1,0 +1,5 @@
+schema_version: "lane-bundles.v1"
+# infra profile — deterministic tests dominant, weekly drift audit
+default_lane: R
+audit_cadence: weekly
+dominant_dimensions: [containment, tests, docs-freshness]

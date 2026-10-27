@@ -1,0 +1,25 @@
+name: System Clone Guide & SDD Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Documentation & Spec-Code Sync Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify Guide & Spec-Code Sync
+        run: |
+          test -f README.md
+          grep -q "status=progress" README.md
+          bash tools/ci_spec_code_sync.sh

@@ -1,0 +1,4 @@
+# infra profile — apply paths are the containment surface
+trust_boundaries:
+  - "infrastructure/**"
+  - "bin/**"

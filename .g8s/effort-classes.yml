@@ -1,0 +1,36 @@
+# Effort Classes Configuration — Infra Profile (issue #550 / C2)
+# Maps task write-scope paths to reasoning effort defaults.
+# Schema: schema_version "effort-classes.v1", first match by priority wins.
+# Unregistered tasks implicitly default to medium (fail-open floor).
+
+schema_version: "effort-classes.v1"
+
+classes:
+  - name: infra-review
+    default_effort: high
+    priority: 10
+    paths:
+      - "infrastructure/**"
+      - "proxmox/**"
+      - "traefik/**"
+      - "teleport/**"
+      - "vaultwarden/**"
+      - "docker-compose*.yml"
+      - "*.env*"
+
+  - name: test
+    default_effort: medium
+    priority: 20
+    paths:
+      - "tests/**"
+      - "scripts/**"
+      - "bin/**"
+
+  - name: docs
+    default_effort: low
+    priority: 30
+    paths:
+      - "*.md"
+      - "docs/**"
+      - "knowledge/**"
+      - "templates/**"
